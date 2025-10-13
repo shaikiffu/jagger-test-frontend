@@ -362,7 +362,7 @@ function ProductDetailsPage() {
      
 
       {/* Description Section - Full Width */}
-      <Box sx={{ backgroundColor: '#e8e8e8', py: 4, mt: 6, position: 'relative', height: '226px' }}>
+      <Box sx={{ backgroundColor: '#e8e8e8', py: 4, mt: 6, position: 'relative', height: { xs: '280px', md: '226px' } }}>
         <Container maxWidth="lg">
           <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
             DESCRIPTION
