@@ -8,7 +8,8 @@
     "npm": ">=9.x"
   },
   "scripts": {
-    "start": "webpack serve --mode development --open",
+    "start": "serve -s dist -l $PORT",
+    "dev": "webpack serve --mode development --open",
     "build": "webpack --mode production",
     "heroku-postbuild": "npm run build",
     "lint": "eslint src/**/*.{js,jsx}",
@@ -31,7 +32,8 @@
     "graphql": "^16.9.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.1.1"
+    "react-router-dom": "^7.1.1",
+    "serve": "^14.2.4"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
