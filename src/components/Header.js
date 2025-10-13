@@ -13,7 +13,9 @@ function Header() {
   const [scrolled, setScrolled] = useState(false);
 
   const { data: cartData } = useQuery(GET_CART_COUNT, {
-    pollInterval: 1000, // Poll every second to keep cart count updated
+    // Use cache with occasional background updates instead of aggressive polling
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
   });
 
   // Check if we're on a product details page
