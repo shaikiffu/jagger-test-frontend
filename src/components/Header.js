@@ -10,6 +10,7 @@ function Header() {
   const location = useLocation();
   const params = useParams();
   const [animate, setAnimate] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   const { data: cartData } = useQuery(GET_CART_COUNT, {
     pollInterval: 1000, // Poll every second to keep cart count updated
@@ -38,6 +39,17 @@ function Header() {
     }
   }, [cartItemCount]);
 
+  // Add scroll listener to detect scrolling
+  useEffect(() => {
+    const handleScroll = () => {
+      const isScrolled = window.scrollY > 0;
+      setScrolled(isScrolled);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   // Determine header background and title - all pages have blue background
   const isBlueBackground = true;
   const headerTitle = isProductDetailsPage
@@ -55,6 +67,7 @@ function Header() {
         color: isBlueBackground ? '#ffffff' : '#000000',
         borderBottom: isBlueBackground ? 'none' : '1px solid #e0e0e0',
         transition: 'all 0.3s ease',
+        boxShadow: scrolled ? '0 2px 8px rgba(0, 0, 0, 0.15)' : 'none',
       }}
     >
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
