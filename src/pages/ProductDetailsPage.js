@@ -359,21 +359,10 @@ function ProductDetailsPage() {
         </Grid>
       </Container>
 
-      {/* Grey Background - Fixed */}
-      <Box
-        sx={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: '30vh',
-          backgroundColor: '#e8e8e8',
-          zIndex: -1,
-        }}
-      />
+     
 
       {/* Description Section - Full Width */}
-      <Box sx={{ backgroundColor: '#e8e8e8', py: 4, mt: 6, position: 'relative' }}>
+      <Box sx={{ backgroundColor: '#e8e8e8', py: 4, mt: 6, position: 'relative', height: '226px' }}>
         <Container maxWidth="lg">
           <Typography variant="h6" component="h2" sx={{ fontWeight: 600, mb: 2, color: '#333' }}>
             DESCRIPTION
