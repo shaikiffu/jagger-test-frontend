@@ -67,7 +67,7 @@ function Header() {
         color: isBlueBackground ? '#ffffff' : '#000000',
         borderBottom: isBlueBackground ? 'none' : '1px solid #e0e0e0',
         transition: 'all 0.3s ease',
-        boxShadow: scrolled ? '0 2px 8px rgba(0, 0, 0, 0.15)' : 'none',
+        boxShadow: scrolled ? '0 4px 12px rgba(0, 0, 0, 0.3)' : 'none',
       }}
     >
       <Toolbar sx={{ minHeight: { xs: 56, sm: 64 } }}>
