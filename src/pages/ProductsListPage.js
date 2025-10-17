@@ -1,9 +1,10 @@
-import { Container, Grid, CircularProgress, Box, Alert, Snackbar } from '@mui/material';
+import { Container, Grid, Alert, Snackbar } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import ProductCard from '../components/ProductCard';
 import { GET_PRODUCTS, GET_CART_COUNT, GET_CART } from '../graphql/queries';
 import { ADD_TO_CART } from '../graphql/mutations';
+import LoadingError from '../components/LoadingError';
 
 function ProductsListPage() {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
@@ -36,7 +37,11 @@ function ProductsListPage() {
         },
       });
     } catch (err) {
-      console.error('Error adding to cart:', err);
+      setSnackbar({
+        open: true,
+        message: `Error adding to cart: ${err.message}`,
+        severity: 'error',
+      });
     }
   };
 
@@ -44,33 +49,8 @@ function ProductsListPage() {
     setSnackbar({ ...snackbar, open: false });
   };
 
-  if (loading) {
-    return (
-      <Container maxWidth="lg">
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '60vh',
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="lg">
-        <Box sx={{ py: 4 }}>
-          <Alert severity="error">
-            Error loading products: {error.message}
-          </Alert>
-        </Box>
-      </Container>
-    );
+  if (loading || error) {
+    return <LoadingError loading={loading} error={error} maxWidth="lg" />;
   }
 
   return (

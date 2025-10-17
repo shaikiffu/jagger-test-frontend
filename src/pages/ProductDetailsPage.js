@@ -8,7 +8,6 @@ import {
   Box,
   Button,
   Rating,
-  CircularProgress,
   Alert,
   Snackbar,
   IconButton,
@@ -21,6 +20,7 @@ import KeyboardArrowDown from '@mui/icons-material/KeyboardArrowDown';
 import { GET_PRODUCT, GET_CART_COUNT, GET_CART } from '../graphql/queries';
 import { ADD_TO_CART } from '../graphql/mutations';
 import ProductImageModal from '../components/ProductImageModal';
+import LoadingError from '../components/LoadingError';
 
 function ProductDetailsPage() {
   const { id } = useParams();
@@ -62,7 +62,11 @@ function ProductDetailsPage() {
           },
         });
       } catch (err) {
-        console.error('Error adding to cart:', err);
+        setSnackbar({
+          open: true,
+          message: `Error adding to cart: ${err.message}`,
+          severity: 'error',
+        });
       }
     }
   };
@@ -84,39 +88,12 @@ function ProductDetailsPage() {
     setQuantity(value >= 0 ? value : 0);
   };
 
-  const handleOpenModal = () => {
-    setModalOpen(true);
+  const toggleOpenModal = () => {
+    setModalOpen((prev) => !prev);
   };
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-  };
-
-  if (loading) {
-    return (
-      <Container maxWidth="lg">
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '60vh',
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container maxWidth="lg">
-        <Box sx={{ py: 4 }}>
-          <Alert severity="error">Error loading product: {error.message}</Alert>
-        </Box>
-      </Container>
-    );
+  if (loading || error) {
+    return <LoadingError loading={loading} error={error} maxWidth="lg" />;
   }
 
   const product = data?.product;
@@ -173,7 +150,7 @@ function ProductDetailsPage() {
                     }}
                   />
                   <IconButton
-                    onClick={handleOpenModal}
+                    onClick={toggleOpenModal}
                     sx={{
                       position: 'absolute',
                       bottom: 16,
@@ -231,7 +208,7 @@ function ProductDetailsPage() {
                       size="small"
                       onClick={(e) => {
                         e.stopPropagation();
-                        handleOpenModal();
+                        toggleOpenModal();
                       }}
                       sx={{
                         position: 'absolute',
@@ -386,7 +363,7 @@ function ProductDetailsPage() {
 
       <ProductImageModal
         open={modalOpen}
-        onClose={handleCloseModal}
+        onClose={toggleOpenModal}
         imageUrl={product.imageUrl}
         productName={product.name}
       />

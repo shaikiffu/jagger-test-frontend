@@ -1,5 +1,6 @@
 import { Box } from '@mui/material';
 import Header from './Header';
+import PropTypes from 'prop-types';
 
 function Layout({ children }) {
   return (
@@ -11,5 +12,9 @@ function Layout({ children }) {
     </Box>
   );
 }
+
+Layout.propTypes = {
+  children: PropTypes.node
+};
 
 export default Layout;

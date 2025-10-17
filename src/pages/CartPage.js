@@ -1,27 +1,37 @@
-import { Container, Typography, Box, Button, CircularProgress, Alert } from '@mui/material';
+import { Container, Typography, Box, Button, Alert, Snackbar } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import CartItem from '../components/CartItem';
 import PurchaseCompleteModal from '../components/PurchaseCompleteModal';
 import { GET_CART, GET_CART_COUNT } from '../graphql/queries';
 import { REMOVE_FROM_CART, CLEAR_CART } from '../graphql/mutations';
+import LoadingError from '../components/LoadingError';
 
 function CartPage() {
   const [purchaseModalOpen, setPurchaseModalOpen] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  const { loading, error, data, refetch } = useQuery(GET_CART);
+  const { loading, error, data} = useQuery(GET_CART);
 
   const [removeFromCart] = useMutation(REMOVE_FROM_CART, {
     refetchQueries: [{ query: GET_CART }, { query: GET_CART_COUNT }],
     onError: (error) => {
-      console.error('Error removing from cart:', error);
+      setSnackbar({
+        open: true,
+        message: `Error removing from cart: ${error.message}`,
+        severity: 'error',
+      });
     },
   });
 
   const [clearCart] = useMutation(CLEAR_CART, {
     refetchQueries: [{ query: GET_CART }, { query: GET_CART_COUNT }],
     onError: (error) => {
-      console.error('Error clearing cart:', error);
+      setSnackbar({
+        open: true,
+        message: `Error clearing cart: ${error.message}`,
+        severity: 'error',
+      });
     },
   });
 
@@ -31,7 +41,11 @@ function CartPage() {
         variables: { itemId },
       });
     } catch (err) {
-      console.error('Error removing item:', err);
+      setSnackbar({
+        open: true,
+        message: `Error removing item: ${err.message}`,
+        severity: 'error',
+      });
     }
   };
 
@@ -39,7 +53,11 @@ function CartPage() {
     try {
       await clearCart();
     } catch (err) {
-      console.error('Error clearing cart:', err);
+      setSnackbar({
+        open: true,
+        message: `Error clearing cart: ${err.message}`,
+        severity: 'error',
+      });
     }
   };
 
@@ -55,31 +73,12 @@ function CartPage() {
     setPurchaseModalOpen(false);
   };
 
-  if (loading) {
-    return (
-      <Container maxWidth="md">
-        <Box
-          sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            minHeight: '60vh',
-          }}
-        >
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
-  if (error) {
-    return (
-      <Container maxWidth="md">
-        <Box sx={{ py: 4 }}>
-          <Alert severity="error">Error loading cart: {error.message}</Alert>
-        </Box>
-      </Container>
-    );
+  if (loading || error) {
+    return <LoadingError loading={loading} error={error} maxWidth="md" />;
   }
 
   const cart = data?.cart;
@@ -151,6 +150,21 @@ function CartPage() {
       </Container>
 
       <PurchaseCompleteModal open={purchaseModalOpen} onClose={handleClosePurchaseModal} />
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+      >
+        <Alert
+          onClose={handleCloseSnackbar}
+          severity={snackbar.severity}
+          sx={{ width: '100%' }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </>
   );
 }

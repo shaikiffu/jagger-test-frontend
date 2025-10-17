@@ -1,5 +1,6 @@
 import { Card, CardContent, CardMedia, Typography, Button, Box, Rating } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 function ProductCard({ product, onAddToCart }) {
   const navigate = useNavigate();
@@ -97,5 +98,16 @@ function ProductCard({ product, onAddToCart }) {
     </Card>
   );
 }
+
+ProductCard.propTypes = {
+  product: PropTypes.shape({
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+    name: PropTypes.string.isRequired,
+    shortDescription: PropTypes.string,
+    imageUrl: PropTypes.string,
+    rating: PropTypes.number,
+  }).isRequired,
+  onAddToCart: PropTypes.func.isRequired,
+};
 
 export default ProductCard;

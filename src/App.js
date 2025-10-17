@@ -14,7 +14,7 @@ const client = new ApolloClient({
       Query: {
         fields: {
           products: {
-            // Cache products for 5 minutes
+            // Merge strategy: replace existing cache with incoming data
             merge(existing, incoming) {
               return incoming;
             },
